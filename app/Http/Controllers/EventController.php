@@ -39,19 +39,26 @@ class EventController extends Controller
 
     public function store(Request $request, Event $event)
     {
-        $request->merge(['description' => $request->description ?? null]);
-        
-        $data = $request->validate([
+        $request->validate([
             'title' => 'required|unique:events',
-            'fines' => 'required',
+            'settings' => 'required',
+            'consequence' => 'required',
             'event_date' => 'required',
-            'login_start' => 'required',
-            'login_finish' => 'required',
-            'logout_start' => 'required',
-            'logout_finish' => 'required'
         ]);
-
-        $event->create($data);
+            
+        $request->merge([
+            'description' => $request->description ?? null,
+            'morning_login_start' => $request->morning_login_start ?? null,
+            'morning_login_finish' => $request->morning_login_finish ?? null,
+            'morning_logout_start' => $request->morning_logout_start ?? null,
+            'morning_logout_finish' => $request->morning_logout_finish ?? null,
+            'afternoon_login_start' => $request->afternoon_login_start ?? null,
+            'afternoon_login_finish' => $request->afternoon_login_finish ?? null,
+            'afternoon_logout_start' => $request->afternoon_logout_start ?? null,
+            'afternoon_logout_finish' => $request->afternoon_logout_finish ?? null,
+        ]);
+        
+        $event->create($request->all());
 
         return response('ok', 200);
     }
@@ -65,29 +72,50 @@ class EventController extends Controller
     {   
         $request->validate([
             'title' => 'required',
-            'fines' => 'required',
+            'settings' => 'required',
+            'consequence' => 'required',
             'event_date' => 'required',
-            'login_start' => 'required',
-            'login_finish' => 'required',
-            'logout_start' => 'required',
-            'logout_finish' => 'required'
+        ]);
+        
+        $request->merge([
+            'description' => $request->description ?? null,
+            'morning_login_start' => $request->morning_login_start ?? null,
+            'morning_login_finish' => $request->morning_login_finish ?? null,
+            'morning_logout_start' => $request->morning_logout_start ?? null,
+            'morning_logout_finish' => $request->morning_logout_finish ?? null,
+            'afternoon_login_start' => $request->afternoon_login_start ?? null,
+            'afternoon_login_finish' => $request->afternoon_login_finish ?? null,
+            'afternoon_logout_start' => $request->afternoon_logout_start ?? null,
+            'afternoon_logout_finish' => $request->afternoon_logout_finish ?? null,
         ]);
         
         $events = Event::find($id);
         
-        $events->update([
-            'title' => $request->title,
-            'description' => $request->description,
-            'fines' => $request->fines,
-            'event_date' => $request->event_date,
-            'login_start' => $request->login_start,
-            'login_finish' => $request->login_finish,
-            'logout_start' => $request->logout_start,
-            'logout_finish' => $request->logout_finish
-        ]);
+        $events->update($request->all());
 
-        return response('ok', 200);
-    }
+        if(session()->has('event_name')){
+            session()->put('event_name', $request->title);  
+        }
+        
+        if(session()->has('option') && session()->get('option') == 'Login'){
+            session()->put('time_in', $events->morning_login_start);
+            session()->put('time_out', $events->morning_login_finish);
+        }
+        else if(session()->has('option') && session()->get('option') == 'Logout'){
+            session()->put('time_in', $events->morning_logout_start);
+            session()->put('time_out', $events->morning_logout_finish);
+        }
+        else if(session()->has('option') && session()->get('option') == 'Login Afternoon'){
+            session()->put('time_in', $events->afternoon_login_start);
+            session()->put('time_out', $events->afternoon_login_finish);
+        }
+        else if(session()->has('option') && session()->get('option') == 'Logout Afternoon'){
+            session()->put('time_in', $events->afternoon_logout_start);
+            session()->put('time_out', $events->afternoon_logout_finish);
+        }
+
+        return response('ok', 200); 
+    }   
 
     public function destroy_event(Event $event)
     {

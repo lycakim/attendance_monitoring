@@ -14,13 +14,18 @@ return new class extends Migration
         Schema::create('events', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('description');
-            $table->integer('fines');
+            $table->string('description')->nullable();
+            $table->string('settings'); // whole day or half day
+            $table->string('consequence')->nullable(); // community service hours rendered
             $table->date('event_date');
-            $table->string("login_start");
-            $table->string("login_finish");
-            $table->string("logout_start");
-            $table->string("logout_finish");
+            $table->string("morning_login_start")->nullable();
+            $table->string("morning_login_finish")->nullable();
+            $table->string("morning_logout_start")->nullable();
+            $table->string("morning_logout_finish")->nullable();
+            $table->string("afternoon_login_start")->nullable();
+            $table->string("afternoon_login_finish")->nullable();
+            $table->string("afternoon_logout_start")->nullable();
+            $table->string("afternoon_logout_finish")->nullable();
             $table->boolean('is_turn_on')->default(false);
             $table->timestamps();
         });

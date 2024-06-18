@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->nullable();
             $table->string('program')->nullable();
+            $table->string('course')->nullable();
             $table->string('year')->nullable();
             $table->string('set')->nullable();
             $table->timestamps();

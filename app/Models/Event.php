@@ -24,4 +24,9 @@ class Event extends Model
     {
         return $this->hasMany(Monitoring::class);
     }
+
+    public function on_progress()
+    {
+        return $this->is_turn_on == true;
+    }
 }

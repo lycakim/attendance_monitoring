@@ -6,12 +6,13 @@ use App\Models\Monitoring;
 use App\Models\ActivityLog;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Contracts\Queue\Monitor;
+use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\MonitoringController;
-use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,15 +58,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     
     Route::post('/monitoring/create', [MonitoringController::class, 'store'])->name('monitoring.store');
     Route::post('/monitoring/student/create', [MonitoringController::class, 'student_store'])->name('monitoring.student.store');
-    Route::get('/monitoring', [MonitoringController::class, 'get_events_and_monitoring'])->middleware(['auth', 'verified'])->name('monitoring');
     Route::post('/monitoring/destroy', [MonitoringController::class, 'destroy_monitoring'])->name('monitoring.destroy');
-    
+    Route::get('/monitoring', [MonitoringController::class, 'progress_monitoring'])->middleware(['auth', 'verified'])->name('monitoring');
     Route::get('/students', [StudentController::class, 'show_students'])->middleware(['auth', 'verified'])->name('students');
     Route::post('/student/create', [StudentController::class, 'store'])->name('student.store');
     // Route-Model Binding
     Route::get('/student/{student:id}', [StudentController::class, 'get_student'])->name('student.get');
     Route::put('/student/{id}/update', [StudentController::class, 'update_student'])->name('student.update');
     Route::delete('/student/{student:id}/destroy', [StudentController::class, 'destroy_student'])->name('student.destroy');
+    Route::get('/student/{student:id}/info', [StudentController::class, 'info_student'])->name('student.info');
     
     Route::get('/events', [EventController::class, 'show_events'])->middleware(['auth', 'verified'])->name('events');
     Route::post('/event/create', [EventController::class, 'store'])->name('event.store');

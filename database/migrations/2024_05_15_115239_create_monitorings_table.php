@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('student_id')->nullable()->constrained('students')->nullOnDelete();
             $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('event_id')->nullable()->constrained('events')->nullOnDelete();
+            $table->string('remarks')->nullable();
             $table->string('option')->nullable();
             $table->string('default')->nullable();
             $table->timestamps();

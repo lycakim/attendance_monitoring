@@ -19,7 +19,7 @@
             </div>
         </div>
     </x-slot>
-    <div class=" py-12">
+    <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
@@ -196,34 +196,39 @@ $(document).ready(function() {
             $('#att_option').removeClass('is-invalid');
         }
 
-        $.ajax({
-            type: "POST",
-            url: "{{ route('monitoring.store') }}",
-            data: {
-                'event_id': event_id,
-                'event_name': event,
-                'option': att_option,
-            },
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response) {
-                $("#form")[0].reset();
-                $('#default_name').addClass('hidden')
-                $('#event_name').text(event);
-                $('#event_badge').text(att_option +
-                    ' in progress');
-                $('#event_name').removeClass('hidden');
-                $('#id_number_field').removeClass('hidden');
-                $('#event_badge').removeClass('hidden');
-                $('#start_monitoring').addClass('hidden');
-                $('#end_monitoring').removeClass('hidden');
-                $('#staticBackdrop').modal('hide');
-                setTimeout(function() {
-                    window.location.reload();
-                }, 150);
-            },
-        });
+        window.location.replace('/monitoring/' + event_id + '/progress');
+
+        // var url = "{{ route('monitoring.progress', 'id') }}";
+        // url = url.replace('id', event_id);
+
+        // $.ajax({
+        //     type: "GET",
+        //     url: url,
+        //     data: {
+        //         'event_id': event_id,
+        //         'event_name': event,
+        //         'option': att_option,
+        //     },
+        //     headers: {
+        //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //     },
+        //     success: function(response) {
+        //         $("#form")[0].reset();
+        //         $('#default_name').addClass('hidden')
+        //         $('#event_name').text(event);
+        //         $('#event_badge').text(att_option +
+        //             ' in progress');
+        //         $('#event_name').removeClass('hidden');
+        //         $('#id_number_field').removeClass('hidden');
+        //         $('#event_badge').removeClass('hidden');
+        //         $('#start_monitoring').addClass('hidden');
+        //         $('#end_monitoring').removeClass('hidden');
+        //         $('#staticBackdrop').modal('hide');
+        //         setTimeout(function() {
+        //             window.location.reload();
+        //         }, 150);
+        //     },
+        // });
     });
 
     $('.btn-end-monitoring').click(function() {
@@ -253,6 +258,9 @@ $(document).ready(function() {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function(response) {
+                        console.log(response);
+                        window.location.replace('/events');
+                        // setTimeout(function() {}, 150);
                         Swal.fire({
                             position: 'center',
                             icon: 'success',
@@ -261,9 +269,6 @@ $(document).ready(function() {
                             showConfirmButton: false,
                             timer: 1500
                         });
-                        setTimeout(function() {
-                            window.location.reload();
-                        }, 1500);
                     },
                 });
             } else if (
