@@ -475,7 +475,9 @@ $(document).ready(function() {
                                 )
                                 .text(response.mon_data[i].event_name))
                             .append($('<td scope="row">')
-                                .text(response.mon_data[i].consequence)));
+                                .text(response.mon_data[i].consequence +
+                                    ' (' + response.mon_data[i].cons_remarks + ')'
+                                )));
                 };
                 $('#totalcons').text(response.mon_data.total);
                 id = null;

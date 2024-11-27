@@ -13,7 +13,6 @@ class StudentController extends Controller
     public function show_students(Request $request): View
     {
         $students = Student::all();
-        logger($request->all());
         return view('students', \compact('students'));
     }
 
@@ -116,7 +115,7 @@ class StudentController extends Controller
                     }
                     else{
                         $cnt_absent = $cnt_absent + 1;
-                    } 
+                    }
                 }
             }
             else{
@@ -125,13 +124,10 @@ class StudentController extends Controller
             $mon[$i]['event_name'] = $eve->title;
             $mon[$i]['consequence'] = $cnt_late !== 0 ? ($cnt_late * $eve->consequence) : ($cnt_absent * $eve->consequence); 
             $total = $total + $mon[$i]['consequence'];
-            logger($eve->title);
-            logger('late:'.$cnt_late);
-            logger('absent:'.$cnt_absent);
+            $mon[$i]['cons_remarks'] = $cnt_late . 'L & ' . $cnt_absent . 'A';
             $i++;
         }
         $mon['total'] = $total;
-        logger($mon);
         return [
             'mon_data' => $mon,
             'student_data' => $student

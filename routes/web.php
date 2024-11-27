@@ -35,7 +35,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/logs', function () {
-    $logs = ActivityLog::orderBy('created_at', 'desc')->get();
+    $logs = ActivityLog::with('created_by')->orderBy('created_at', 'desc')->get();
     return view('logs')->with(compact('logs'));
 })->middleware(['auth', 'verified'])->name('logs');
 

@@ -25,7 +25,7 @@
                                     @foreach($logs as $record)
                                     <tr>
                                         <td>{{ $record->description }}</td>
-                                        <td>{{ $record->created_by->name }}</td>
+                                        <td>{{ $record->created_by['name'] }}</td>
                                         <td>{{ $record->created_at->format("F j, Y, h:i A") }}
                                         </td>
                                     </tr>
