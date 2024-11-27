@@ -75,8 +75,6 @@ class MonitoringController extends Controller
             'option' => session()->get('option'),
         ]);
 
-        logger(session()->get('event_id'));
-
         $event = Event::find(session()->get('event_id'));
         $event->is_turn_on = false;
         $event->save();
@@ -110,7 +108,7 @@ class MonitoringController extends Controller
             }
             
             if($if_ex != null){
-                return response('Student already monitored!', 200);
+                return response('Already monitored, 200');
             }
 
             $remarks = '';
@@ -144,10 +142,9 @@ class MonitoringController extends Controller
             session()->put('student_section', $student->set);
             session()->put('student_year', $student->year);
     
-            return response('Student monitoring saved!', 200);
+            return response('ok', 200);
         } catch (\Throwable $th) {
             //throw $th;
-            return response('Something went wrong!', 404);
         }   
     }
 

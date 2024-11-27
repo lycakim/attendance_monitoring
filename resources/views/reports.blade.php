@@ -25,23 +25,19 @@
                                 <thead>
                                     <tr>
                                         <th>Student</th>
-                                        <th>Name</th>
                                         <th>Program</th>
                                         <th>Year</th>
                                         <th>Set</th>
-                                        <th>Consequence</th>
                                         <th>Event</th>
                                     </tr>
                                 </thead>
                                 <tbody id="table-body">
                                     @foreach($monitoring_reports as $record)
                                     <tr>
-                                        <td>{{ $record->students->id_number }}</td>
-                                        <td>{{ $record->students->name }}</td>
+                                        <td>{{ $record->students->id_number . ' ' . $record->students->name }}</td>
                                         <td>{{ $record->students->program }}</td>
                                         <td>{{ $record->students->year }}</td>
                                         <td>{{ $record->students->set }}</td>
-                                        <td class="font-semibold">{{ $record->consequence }}</td>
                                         <td>{{ $record->events->title }}</td>
                                     </tr>
                                     @endforeach

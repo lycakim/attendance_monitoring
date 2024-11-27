@@ -45,7 +45,7 @@
                     </div>
                 </div>
             </div>
-            <div class="bg-white w-full md:w-1/3 dark:bg-gray-800 shadow-sm sm:rounded-lg">
+            <div class=" bg-white w-full md:w-1/3 dark:bg-gray-800 shadow-sm sm:rounded-lg">
                 <div class="p-2 text-gray-900 dark:text-gray-100">
                     <div class="relative overflow-x-auto overflow-y-auto h-96 max-h-96">
                         <table id="data-table"
@@ -86,7 +86,7 @@
             </div>
         </div>
         <div class="max-w-8xl mx-auto sm:px-6 lg:px-8 flex justify-between gap-2 mt-2">
-            <div class="w-full md:w-2/3 md:flex gap-2">
+            <div class="md:w-2/3 md:flex gap-2">
                 <div class="bg-white p-5 shadow-sm rounded-lg w-1/2">
                     <div class="text-center justify-content-center align-items-center align-self-center">
                         <h1 class="pb-2">Current Time</h1>
@@ -106,7 +106,7 @@
                     </div>
                 </div>
             </div>
-            <div class="w-full md:w-1/3 bg-white p-2 shadow-sm rounded-lg">
+            <div class="md:w-1/3 bg-white p-2 shadow-sm rounded-lg">
                 <div class="text-center justify-content-center align-items-center align-self-center m-4">
                     <input autofocus type="text" autocomplete="off" style="height: 60px; font-size: 20px;"
                         class="form-control rounded-lg" id="mon_id_number" placeholder="Enter ID Number here">
@@ -206,19 +206,22 @@ $(document).ready(function() {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function(response) {
+                    console.log(response);
                     $('#data-table').load("{{ route('monitoring') }}" +
                         ' #data-table');
                     $('#mon_id_number').val("");
                     Swal.fire({
                         position: 'top-right',
                         icon: 'success',
-                        title: response,
+                        title: "Student Saved!",
+                        text: "You have successfully " +
+                            "{{ session()->get('option') }}!",
                         showConfirmButton: false,
-                        timer: 1500
+                        timer: 1000
                     });
                     setTimeout(function() {
                         window.location.reload();
-                    }, 1500);
+                    }, 150);
                 },
                 error: function(xhr, desc, err) {
                     if (xhr.status == 404) {

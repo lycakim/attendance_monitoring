@@ -50,43 +50,7 @@ class ReportController extends Controller
     {
         $events = Event::all();
         $set_list = Student::select('set')->distinct()->orderBy('set', 'asc')->get();
-        $monitoring_reports = Monitoring::where('default', 'student')->with('students')->with('events')->orderBy('created_at', 'desc')->get();
-
-        $cnt_late = 0;
-        $totalHrs = 0;
-        $conse = 0;
-        if(count($monitoring_reports) > 0){
-            foreach($monitoring_reports as $record){
-                $conse = $record->events->consequence;
-                if($record->events->settings && $record->events->settings == 'wday'){
-                    if($record->option == 'Login' && $record->remarks == 'late'){
-                        $cnt_late = $cnt_late + 1;
-                    }
-                    else if($record->option == 'Logout' && $record->remarks == 'late'){
-                        $cnt_late = $cnt_late + 1;
-                    }
-                    else if($record->option == 'Login Afternoon' && $record->remarks == 'late'){
-                        $cnt_late = $cnt_late + 1;
-                    }
-                    else if($record->option == 'Logout Afternoon' && $record->remarks == 'late'){
-                        $cnt_late = $cnt_late + 1;
-                    }
-                }
-                else {
-                    if($record->option == 'Login' && $record->remarks == 'late'){
-                        $cnt_late = $cnt_late + 1;
-                    }
-                    else if($record->option == 'Logout' && $record->remarks == 'late'){
-                        $cnt_late = $cnt_late + 1;
-                    }
-                    
-                }
-                $record['consequence'] = $cnt_late !== 0 ? ($cnt_late * $conse) :  $cnt_late;
-                $cnt_late = 0;
-                logger($conse . ' - '. $record->events->id . ' - ' . $cnt_late . ' - '. $record['consequence']);
-            }
-            
-        }
+        $monitoring_reports = Monitoring::where('default', 'student')->orderBy('created_at', 'desc')->get();
         session()->put('reports', $monitoring_reports);
         return view('reports')->with(compact('set_list','events','monitoring_reports'));
     }
@@ -103,7 +67,7 @@ class ReportController extends Controller
             "Expires"             => "0"
         ];
 
-        $columns = ['Student ID Number', 'Student Name', 'Program', 'Year', 'Set', 'Event', 'Consequence', 'Date'];
+        $columns = ['Student ID Number', 'Student Name', 'Program', 'Year', 'Set', 'Event', 'Date'];
 
             $callback = function() use($columns) {
                 $file = fopen('php://output', 'w');
@@ -117,7 +81,6 @@ class ReportController extends Controller
                         $data->students->year,
                         $data->students->set,
                         $data->events->title,
-                        $this->getStudentInfo($data->students->id, $data->events->id),
                         $data->created_at
                     ]);
                 }
@@ -126,108 +89,5 @@ class ReportController extends Controller
             };
 
         return response()->stream($callback, 200, $headers);
-    }
-
-    public function getStudentInfo($student_id, $event_id)
-    {
-        $monitorings = Monitoring::where('student_id', $student_id)->where('event_id', $event_id)->with('events')->groupBy('option')->get();
-        $cnt_late = 0;
-        $cnt_absent = 0;
-        $totalHrs = 0;
-        $conse = 0;
-        if(count($monitorings) > 0){
-            foreach($monitorings as $record){
-                $conse = $record->events->consequence;
-                if($record->events->settings && $record->events->settings == 'wday'){
-                    if($record->option == 'Login' && $record->remarks == 'late'){
-                        $cnt_late = $cnt_late + 1;
-                    }
-                    else if($record->option == 'Logout' && $record->remarks == 'late'){
-                        $cnt_late = $cnt_late + 1;
-                    }
-                    else if($record->option == 'Login Afternoon' && $record->remarks == 'late'){
-                        $cnt_late = $cnt_late + 1;
-                    }
-                    else if($record->option == 'Logout Afternoon' && $record->remarks == 'late'){
-                        $cnt_late = $cnt_late + 1;
-                    }
-                }
-                else if($record->events->settings && $record->events->settings == 'hday'){
-                    if($record->option == 'Login' && $record->remarks == 'late'){
-                        $cnt_late = $cnt_late + 1;
-                    }
-                    else if($record->option == 'Logout' && $record->remarks == 'late'){
-                        $cnt_late = $cnt_late + 1;
-                    }
-                }
-                else{
-                    $cnt_absent = $cnt_absent + 1;
-                }
-            }
-        }
-        else{
-            $cnt_absent = $cnt_absent + 1;
-        }
-        $totalHrs = $cnt_late !== 0 ? ($cnt_late * $conse) : ($cnt_absent * $conse);
-        logger($totalHrs);
-        logger($monitorings);
-        return $totalHrs;
-    }
-
-    public function info_student(Student $student, Event $events)
-    {
-        // $events = Event::all();
-
-        $mon = [];
-        $totalHrs = 0;
-        $i = 0;
-        $total = 0;
-        foreach($events as $eve){
-            $monit = Monitoring::where('student_id', $student->id)->where('event_id', $eve->id)->with('events')->groupBy('option')->get();
-            $cnt_late = 0;
-            $cnt_absent = 0;
-            if(count($monit) > 0){
-                foreach($monit as $record){
-                    if($record->events->settings && $record->events->settings == 'wday'){
-                        if($record->option == 'Login' && $record->remarks == 'late'){
-                            $cnt_late = $cnt_late + 1;
-                        }
-                        else if($record->option == 'Logout' && $record->remarks == 'late'){
-                            $cnt_late = $cnt_late + 1;
-                        }
-                        else if($record->option == 'Login Afternoon' && $record->remarks == 'late'){
-                            $cnt_late = $cnt_late + 1;
-                        }
-                        else if($record->option == 'Logout Afternoon' && $record->remarks == 'late'){
-                            $cnt_late = $cnt_late + 1;
-                        }
-                    }
-                    else if($record->events->settings && $record->events->settings == 'hday'){
-                        if($record->option == 'Login' && $record->remarks == 'late'){
-                            $cnt_late = $cnt_late + 1;
-                        }
-                        else if($record->option == 'Logout' && $record->remarks == 'late'){
-                            $cnt_late = $cnt_late + 1;
-                        }
-                    }
-                    else{
-                        $cnt_absent = $cnt_absent + 1;
-                    } 
-                }
-            }
-            else{
-                $cnt_absent = $cnt_absent + 1;
-            }
-            $mon[$i]['event_name'] = $eve->title;
-            $mon[$i]['consequence'] = $cnt_late !== 0 ? ($cnt_late * $eve->consequence) : ($cnt_absent * $eve->consequence); 
-            $totalHrs = $cnt_late !== 0 ? ($cnt_late * $eve->consequence) : ($cnt_absent * $eve->consequence);
-            $total = $total + $mon[$i]['consequence'];
-            logger($eve->title);
-            logger('late:'.$cnt_late);
-            logger('absent:'.$cnt_absent);
-            $i++;
-        }
-        $mon['total'] = $total;
-        return $totalHrs;
     }
 }
