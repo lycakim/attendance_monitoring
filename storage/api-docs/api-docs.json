@@ -1,0 +1,70 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Attendance Monitoring System",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/students": {
+            "get": {
+                "tags": [
+                    "Students"
+                ],
+                "summary": "List Students",
+                "description": "Retrieve a list of all students",
+                "operationId": "c14729e5826ff7a36696622868b745d1",
+                "responses": {
+                    "200": {
+                        "description": "Successful",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "/api/students/list/{student}": {
+            "get": {
+                "tags": [
+                    "Students"
+                ],
+                "summary": "List Students",
+                "description": "Retrieve one of all students",
+                "operationId": "c68b44271628a71f370c209b820dd5bd",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Provide student's name",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "name": "bearerAuth",
+                "in": "header",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Students",
+            "description": "Students"
+        }
+    ]
+}
